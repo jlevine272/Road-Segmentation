@@ -225,7 +225,10 @@ def save_colorful_images(predictions, filenames, output_dir, palettes):
        im.save(fn)
 
 def generate_colorful_images(predictions):
-    return [ Image.fromarray(palettes[predictions[i].squeeze()]) for i in range(len(predictions)) ]
+    return [ Image.fromarray(CITYSCAPE_PALETTE[predictions[i].squeeze()]) for i in range(len(predictions)) ]
+
+def generate_road_mask(predictions):
+    return [Image.fromarray(predictions[i].squeeze() == 0) for i in range(len(predictions))]
 
 
 def test(eval_data_loader, model, num_classes,
@@ -249,6 +252,7 @@ def test(eval_data_loader, model, num_classes,
     end = time.time()
     hist = np.zeros((num_classes, num_classes))
     output = []
+    masks = []
     for iter, image in enumerate(eval_data_loader):
         data_time.update(time.time() - end)
         image_var = Variable(image, requires_grad=False, volatile=True)
@@ -261,6 +265,7 @@ def test(eval_data_loader, model, num_classes,
         batch_time.update(time.time() - end)
         if output_ims:
             output.extend(generate_colorful_images(pred))
+            masks.extend(generate_road_mask(pred))
 
         if save_vis:
             save_output_images(pred, name, output_dir)
@@ -283,7 +288,7 @@ def test(eval_data_loader, model, num_classes,
         logger.info(' '.join('{:.03f}'.format(i) for i in ious))
         return round(np.nanmean(ious), 2), output_ims
     # The first class is the road
-    return None, output_ims, pred[0]
+    return None, output, masks
 
 
 def resize_4d_tensor(tensor, width, height):
