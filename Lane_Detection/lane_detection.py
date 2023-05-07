@@ -35,10 +35,11 @@ class LaneDetector:
         right_lane_slopes = []
         line_mask = np.zeros_like(img_with_lines)
         lanes_xy = [None, None]
+        # line_debug = np.copy(img_rgb)
 
 
         for x1, y1, x2, y2 in line_endpoints:
-            
+            # cv2.line(line_debug, (x1, y1), (x2, y2), (0, 0, 255), 5)
             if x2 == x1:
                 continue
 
@@ -81,6 +82,9 @@ class LaneDetector:
 
         img_with_lines = cv2.addWeighted(img_with_lines, 0.6, line_mask, 0.4, 0)
 
+        # plt.imshow(line_debug)
+        # plt.show()
+
         return img_with_lines, lanes_xy
 
 
@@ -89,7 +93,13 @@ class LaneDetector:
         canny_edge_detector = CannyEdgeDetector(self.canny_min_threshold, self.canny_max_threshold, self.gaussian_kernel_size, self.gaussian_kernel_sigma)
         img_canny = canny_edge_detector.apply_canny(img_rgb)
 
+        # plt.imshow(img_canny, cmap="gray")
+        # plt.show()
+
         img_canny_cropped = self.crop_roi(img_canny)
+        
+        # plt.imshow(img_canny_cropped, cmap="gray")
+        # plt.show()
 
         hough_line_detector = HoughLines(self.rho_bin_size, self.theta_bin_size, self.line_threshold)
         line_endpoints = hough_line_detector.apply_hough_lines(img_canny_cropped)

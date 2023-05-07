@@ -253,7 +253,8 @@ def test(eval_data_loader, model, num_classes,
     hist = np.zeros((num_classes, num_classes))
     output = []
     masks = []
-    for iter, image in enumerate(eval_data_loader):
+    inputs = []
+    for iter, (image, rgb_image) in enumerate(eval_data_loader):
         data_time.update(time.time() - end)
         image_var = Variable(image, requires_grad=False, volatile=True)
 
@@ -266,6 +267,7 @@ def test(eval_data_loader, model, num_classes,
         if output_ims:
             output.extend(generate_colorful_images(pred))
             masks.extend(generate_road_mask(pred))
+            inputs.append(rgb_image[0])
 
         if save_vis:
             save_output_images(pred, name, output_dir)
@@ -288,7 +290,7 @@ def test(eval_data_loader, model, num_classes,
         logger.info(' '.join('{:.03f}'.format(i) for i in ious))
         return round(np.nanmean(ious), 2), output_ims
     # The first class is the road
-    return None, output, masks
+    return None, output, masks, inputs
 
 
 def resize_4d_tensor(tensor, width, height):
