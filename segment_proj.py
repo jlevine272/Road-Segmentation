@@ -225,23 +225,23 @@ def save_colorful_images(predictions, filenames, output_dir, palettes):
        im.save(fn)
 
 def generate_colorful_images(predictions):
-    return [ Image.fromarray(palettes[predictions[ind].squeeze()]) for i in range(len(predictions)) ]
+    return [ Image.fromarray(palettes[predictions[i].squeeze()]) for i in range(len(predictions)) ]
 
 
 def test(eval_data_loader, model, num_classes,
-         output_dir='pred', has_gt=False, save_vis=False, output_ims=False):
+         output_dir='pred', has_gt=False, save_vis=False, output_ims=True):
     """
     Produce Segmented Outputs for images
-    @param eval_data_loader: a SegList that outputs test images
+    @param eval_data_loader: a SegList that outputs test images. Should have Batch size of 1
     @param model: a trained DRNSeg model
     @param num_classes: the number of classes in the dataset
     @param output_dir: The directory where outputs will be saved
     @param has_gt: Should be True if the dataloader also has ground truth segmentations
     @param save_vis: Determines whether the outputs will be saved
     @param output_ims: Determines whether the function will return the segmented images
-    @return: tuple of (mAP, outputs), where mAP is a float and outputs is a list of segmented images.
+    @return: tuple of (mAP, outputs, road_mask), where mAP is a float and outputs is a list of segmented images.
                 if has_gt is false, mAP will be replaced with None. If output_ims=False,
-                outputs will be an empty list.
+                outputs will be an empty list. road_mask
     """
     model.eval()
     batch_time = AverageMeter()
@@ -282,8 +282,8 @@ def test(eval_data_loader, model, num_classes,
         ious = per_class_iu(hist) * 100
         logger.info(' '.join('{:.03f}'.format(i) for i in ious))
         return round(np.nanmean(ious), 2), output_ims
-
-    return None, output_ims
+    # The first class is the road
+    return None, output_ims, pred[0]
 
 
 def resize_4d_tensor(tensor, width, height):
