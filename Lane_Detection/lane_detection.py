@@ -6,7 +6,7 @@ import cv2
 
 class LaneDetector:
 
-    def __init__(self, canny_min_threshold, canny_max_threshold, gaussian_kernel_size, gaussian_kernel_sigma=None, rho_bin_size=1, theta_bin_size=1, line_threshold=100, slope_threshold=0.1):
+    def __init__(self, canny_min_threshold, canny_max_threshold, gaussian_kernel_size, gaussian_kernel_sigma=None, rho_bin_size=1, theta_bin_size=1, line_threshold=100, slope_threshold=0.1, cropping_mask=None):
 
         self.canny_min_threshold = canny_min_threshold
         self.canny_max_threshold = canny_max_threshold
@@ -16,13 +16,16 @@ class LaneDetector:
         self.theta_bin_size = theta_bin_size
         self.line_threshold = line_threshold
         self.slope_threshold = slope_threshold
-
+        self.cropping_mask = cropping_mask
 
     def crop_roi(self, img):
 
-        mask = np.zeros_like(img)
-        limit = int(img.shape[0]*3/5)
-        mask[limit:, :] = img[limit:, :]
+        if self.cropping_mask is None:
+            mask = np.zeros_like(img)
+            limit = int(img.shape[0]*3/5)
+            mask[limit:, :] = img[limit:, :]
+        else:
+            mask = cv2.bitwise_and(img, self.cropping_mask)
         return mask
 
 
