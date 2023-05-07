@@ -7,3 +7,4 @@
 *.zip
 /drn-master/drn_d_22_000_test/leftImg8bit/test/
 /drn-master/drn_d_22_000_test_color/leftImg8bit/test/
+*.pyc
