@@ -29,24 +29,33 @@ if __name__ == "__main__":
     file_counter = 0
     data = {}
 
-    for file_name in os.listdir(images_path):
-        
-        file_path = os.path.join(images_path, file_name)
+    try:
+        for file_name in os.listdir(images_path):
+            
+            file_path = os.path.join(images_path, file_name)
 
-        img_rgb = mimg.imread(file_path)
-        lane_img, lines_xy = ld.detect_lanes(img_rgb)
-        l0, r0 = get_x_values(lines_xy)
+            img_rgb = mimg.imread(file_path)
+            lane_img, lines_xy = ld.detect_lanes(img_rgb)
+            l0, r0 = get_x_values(lines_xy)
 
-        key = '/'.join(file_path.split("/")[-2:])[:-15] + ".json"
-        x_values = {
-            "l0": l0.tolist(),
-            "r0": r0.tolist()
-        }
-        data[key] = x_values
-        file_counter += 1
+            key = '/'.join(file_path.split("/")[-2:])[:-15] + ".json"
+            x_values = {
+                "l0": l0.tolist(),
+                "r0": r0.tolist()
+            }
+            data[key] = x_values
+            file_counter += 1
 
-        if file_counter % 1 == 0:
-            print(file_counter)
+            if file_counter % 10 == 0:
+                print(file_counter)
+            
+            if file_counter == 500:
+                break
+    except:
+        json_data = json.dumps(data, indent=4)
+
+        with open('output.json', 'w') as file:
+            file.write(json_data)
 
     json_data = json.dumps(data, indent=4)
 
