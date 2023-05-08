@@ -250,7 +250,7 @@ class ToTensor(object):
         if label is None:
             return img,
         else:
-            return img, torch.LongTensor(np.array(label, dtype=np.int))
+            return img, torch.LongTensor(np.array(label, dtype=int))
 
 
 class Compose(object):

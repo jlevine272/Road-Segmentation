@@ -12,5 +12,7 @@ This notebook uses code from Fisher Yu to run segmentation. The segmentation arc
 ## Lane Detection
 Lane detection is implemented using Canny Edge Detection and Hough Transform, which are implemented in `Lane_Detection/canny.py` and `Lane_Detection/hough_lines.py`, respectively. The two components are combined in `lane_detection.py`.
 
+Lane detection was evaluated using `evaluate_lane_detection.py`.
+
 ## Debugging
 While debugging our code, we used `lane_detect.ipynb`, which gives outputs for the lane detection dataset.
