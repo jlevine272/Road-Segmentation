@@ -1,5 +1,5 @@
 # Augmenting Driving Image Segmentation with Lane Detection
-This is the code for the CS445: Deep Learning for Computer Vision final project. The report is available [here]([url](https://github.com/jlevine272/Road-Segmentation/blob/master/Lane%20Detection%20Report.pdf)).
+This is the code for the CS445: Deep Learning for Computer Vision final project. The report is available [here](https://github.com/jlevine272/Road-Segmentation/blob/master/Lane%20Detection%20Report.pdf).
 
 ## Requirements
 Before running this code, please install all of the packages in `requirements.txt`.
